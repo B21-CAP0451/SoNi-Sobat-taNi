@@ -27,14 +27,14 @@
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="@+id/SoNiLogo"
         app:layout_constraintTop_toBottomOf="@+id/SoNiLogo"
-        android:text="SObat taNI" />
+        android:text="@string/sobat_tani" />
 
     <TextView
         android:id="@+id/TeamName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-        android:text="B21-CAP0451"
+        android:text="@string/b21_cap0451"
         android:textColor="@color/black"
         android:textSize="25sp"
         android:textStyle="bold"
@@ -47,7 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Anggota"
+        android:text="@string/anggota"
         android:textColor="@color/black"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="@+id/TeamName"

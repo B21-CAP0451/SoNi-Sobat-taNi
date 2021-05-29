@@ -13,7 +13,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:textSize="30sp"
-        tools:text="Pindai Tanaman"
+        android:text="@string/pindai_tanaman"
         android:background="@color/purple_500"
         android:textColor="@color/white"/>
 

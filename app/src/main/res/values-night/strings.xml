@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="TentangAplikasi">About</string>
+    <string name="pindai_tanaman">Pindai Tanaman</string>
+    <string name="sobat_tani">SObat taNI</string>
+    <string name="b21_cap0451">B21-CAP0451</string>
+    <string name="anggota">Anggota</string>
 </resources>
