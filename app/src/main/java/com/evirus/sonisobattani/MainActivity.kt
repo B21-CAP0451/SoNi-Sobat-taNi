@@ -2,8 +2,6 @@ package com.evirus.sonisobattani
 
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -19,18 +17,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val btnPndaiTanaman: TextView = findViewById(R.id.PindaiTanaman)
         btnPndaiTanaman.setOnClickListener(this)
 
-        val btnCekCuaca: TextView = findViewById(R.id.CekCuaca)
-        btnCekCuaca.setOnClickListener(this)
     }
     override fun onClick(v: View?) {
         when (v?.id) {
             R.id.PindaiTanaman -> {
                 val Intent1 = Intent(this@MainActivity, PindaiTanaman::class.java)
                 startActivity(Intent1)
-            }
-            R.id.CekCuaca -> {
-                val Intent2 = Intent(this@MainActivity, CekCuaca::class.java)
-                startActivity(Intent2)
             }
         }
     }

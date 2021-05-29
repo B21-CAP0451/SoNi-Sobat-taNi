@@ -11,11 +11,12 @@
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginTop="32dp"
+        android:src="@drawable/caping"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
     <TextView
-        android:id="@+id/TeamName"
+        android:id="@+id/SoNI"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -26,7 +27,21 @@
         app:layout_constraintHorizontal_bias="0.454"
         app:layout_constraintStart_toStartOf="@+id/SoNiLogo"
         app:layout_constraintTop_toBottomOf="@+id/SoNiLogo"
-        android:text="B21-CAP0451" />
+        android:text="SObat taNI" />
+
+    <TextView
+        android:id="@+id/TeamName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:text="B21-CAP0451"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/SoNI"
+        app:layout_constraintHorizontal_bias="0.454"
+        app:layout_constraintStart_toStartOf="@+id/SoNI"
+        app:layout_constraintTop_toBottomOf="@+id/SoNI" />
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
