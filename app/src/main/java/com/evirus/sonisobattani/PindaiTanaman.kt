@@ -81,4 +81,3 @@ class PindaiTanaman : AppCompatActivity() {
             return Uri.parse(path.toString())
         }
     }
-}
