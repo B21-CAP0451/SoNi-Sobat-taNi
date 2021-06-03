@@ -4,12 +4,15 @@ package com.evirus.sonisobattani
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
 import android.provider.MediaStore
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
@@ -35,8 +38,10 @@ class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
             e.printStackTrace()
         }
         mediaHelper = MediaHelper()
-        btn_take.setOnClickListener (this)
-        btn_up.setOnClickListener (this)
+        val btnTake: Button = findViewById(R.id.btn_take)
+        val btnUp: Button = findViewById(R.id.btn_up)
+        btnTake.setOnClickListener (this)
+        btnUp.setOnClickListener (this)
 
     }
     override fun onClick(v: View?) {
