@@ -1,86 +1,93 @@
 package com.evirus.sonisobattani
 
+
+import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.StrictMode
 import android.provider.MediaStore
-import android.util.Base64
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
-import com.evirus.sonisobattani.databinding.ActivityPindaiTanamanBinding
-import com.google.android.gms.common.util.IOUtils.toByteArray
-import java.io.ByteArrayOutputStream
+import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
+import org.json.JSONObject
+import java.lang.reflect.Method
 
-class PindaiTanaman : AppCompatActivity() {
-        private val REQUEST_CODE = 7
-        private lateinit var binding:ActivityPindaiTanamanBinding
-        override fun onCreate(savedInstanceState: Bundle?) {
+class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
+    var imstr = ""
+    var namafile = ""
+    val url: String = "http://www.xxxx.com"
+    var fileUri = Uri.parse("")
+    lateinit var mediaHelper:MediaHelper
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_pindai_tanaman)
+        try {
+            val method: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
+            method.invoke(null)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        mediaHelper = MediaHelper()
+        btn_take.setOnClickListener (this)
+        btn_up.setOnClickListener (this)
 
-            super.onCreate(savedInstanceState)
-            binding=ActivityPindaiTanamanBinding.inflate(layoutInflater)
-            setContentView(binding.root)
-            binding.btnDown.isEnabled = false
-            binding.btnUp.isEnabled = false
-            binding.btnTake.setOnClickListener {
-
-                val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
-                if (takePictureIntent.resolveActivity(this.packageManager) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_CODE)
-                } else {
-                    Toast.makeText(this, "Tidak Dapat Menggunakan Camera", Toast.LENGTH_SHORT).show()
-                }
-                binding.btnUp.isEnabled = true
+    }
+    override fun onClick(v: View?) {
+        when(v?.id){
+            R.id.btn_take->{
+                requestPermission()
+            }
+            R.id.btn_up->{
+                uploadFile()
             }
         }
-
-        override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-            binding= ActivityPindaiTanamanBinding.inflate(layoutInflater)
-            setContentView(binding.root)
-            if (requestCode== REQUEST_CODE && resultCode== Activity.RESULT_OK){
-                val takenImage= data?.extras?.get("data") as Bitmap
-                binding.imageView.setImageBitmap(takenImage)
-                binding.btnDown.isEnabled = false
-                UploadUtility(this).uploadFile(getImageUriFromBitmap(this,takenImage), "images" ) //Ini
-                binding.btnUp.setOnClickListener {
-                    binding.progressBar.visibility= View.VISIBLE
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        Toast.makeText(this, "Berhasil Mengunggah", Toast.LENGTH_SHORT).show()
-                        binding.progressBar.visibility= View.INVISIBLE
-                        binding.btnDown.isEnabled = true
-                        binding.btnUp.isEnabled = false
-                        binding.textView2.visibility=View.VISIBLE
-                    }, 1000)
-                }
-                binding.btnDown.setOnClickListener {
-                    binding.progressBar.visibility= View.VISIBLE
-                    Handler(Looper.getMainLooper()).postDelayed({
-                        Toast.makeText(this, "Berhasil Mengunduh Solusi", Toast.LENGTH_SHORT).show()
-                        binding.progressBar.visibility= View.INVISIBLE
-                        binding.btnUp.isEnabled = false
-                        binding.textView2.visibility=View.VISIBLE
-                        val intent= Intent(this, SolusiActivity::class.java)
-                        startActivity(intent)
-                    }, 1000)
-                }
-            }else{ super.onActivityResult(requestCode, resultCode, data)}
-
-        }
-        fun getImageUriFromBitmap(context: Context, bitmap: Bitmap): Uri {
-            val bytes = ByteArrayOutputStream()
-            val quality = 100
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bytes)
-            val imageBytes: ByteArray = ByteArrayOutputStream.toByteArray() //deprecated ?
-            val imageString: String = Base64.encodeToString(imageBytes, Base64.DEFAULT)
-            textView.text = imageString //ini
-            val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Judul", null)
-            return Uri.parse(path.toString())
-        }
     }
+    fun uploadFile(){
+        val request = object :StringRequest(Method.POST, url,
+            Response.Listener{response ->
+                val jsonObject = JSONObject(response)
+                val code = jsonObject.getString("code")
+                if (code.equals("000")){
+                    Toast.makeText(this, "Unggah Foto Sukses", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(this,"Unggah Foto Gagal", Toast.LENGTH_SHORT).show()
+                }
+            },
+            Response.ErrorListener { error ->
+                Toast.makeText(this, "Proses Unggah Mengalami Gangguan", Toast.LENGTH_SHORT).show()
+            }){
+            override fun getParams(): MutableMap<String, String> {
+                val hashmap=HashMap<String, String>()
+                hashmap.put("imstr", imstr)
+                hashmap.put("namafile", namafile)
+                return hashmap
+            }
+        }
+        val q=Volley.newRequestQueue(this)
+        q.add(request)
+    }
+    fun requestPermission()=runWithPermissions(
+        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        Manifest.permission.CAMERA){
+            fileUri=mediaHelper.getOutputMediaFileUri()
+            val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+            intent.putExtra(MediaStore.EXTRA_OUTPUT,fileUri)
+            startActivityForResult(intent, mediaHelper.getRCCamera())
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK)
+            if (requestCode == mediaHelper.getRCCamera()){
+                imstr = mediaHelper.getBitmapToString(imV , fileUri)
+                namafile = mediaHelper.getMyFileName()
+            }
+    }
+}
