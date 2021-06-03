@@ -89,9 +89,10 @@ class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        val imageView:ImageView=findViewById(R.id.imageView)
         if (resultCode == Activity.RESULT_OK)
             if (requestCode == mediaHelper.getRCCamera()){
-                imstr = mediaHelper.getBitmapToString(imV , fileUri)
+                imstr = mediaHelper.getBitmapToString(imageView , fileUri)
                 namafile = mediaHelper.getMyFileName()
             }
     }
