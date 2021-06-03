@@ -12,10 +12,10 @@ import android.os.Looper
 import android.provider.MediaStore
 import android.util.Base64
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import com.evirus.sonisobattani.databinding.ActivityPindaiTanamanBinding
+import com.google.android.gms.common.util.IOUtils.toByteArray
 import java.io.ByteArrayOutputStream
 
 class PindaiTanaman : AppCompatActivity() {
@@ -35,7 +35,7 @@ class PindaiTanaman : AppCompatActivity() {
                 if (takePictureIntent.resolveActivity(this.packageManager) != null) {
                     startActivityForResult(takePictureIntent, REQUEST_CODE)
                 } else {
-                    Toast.makeText(this, "Unable to use camera", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Tidak Dapat Menggunakan Camera", Toast.LENGTH_SHORT).show()
                 }
                 binding.btnUp.isEnabled = true
             }
@@ -48,7 +48,7 @@ class PindaiTanaman : AppCompatActivity() {
                 val takenImage= data?.extras?.get("data") as Bitmap
                 binding.imageView.setImageBitmap(takenImage)
                 binding.btnDown.isEnabled = false
-                // FirebaseStorageManager().uploadImage(this, getImageUriFromBitmap(this,takenImage))
+                UploadUtility(this).uploadFile(getImageUriFromBitmap(this,takenImage), "images" ) //Ini
                 binding.btnUp.setOnClickListener {
                     binding.progressBar.visibility= View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed({
@@ -77,7 +77,10 @@ class PindaiTanaman : AppCompatActivity() {
             val bytes = ByteArrayOutputStream()
             val quality = 100
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, bytes)
-            val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Title", null)
+            val imageBytes: ByteArray = ByteArrayOutputStream.toByteArray() //deprecated ?
+            val imageString: String = Base64.encodeToString(imageBytes, Base64.DEFAULT)
+            textView.text = imageString //ini
+            val path = MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "Judul", null)
             return Uri.parse(path.toString())
         }
     }
