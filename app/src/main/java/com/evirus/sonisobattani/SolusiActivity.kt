@@ -7,5 +7,6 @@ class SolusiActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_solusi)
+        supportActionBar?.title="Detail Solusi"
     }
 }
