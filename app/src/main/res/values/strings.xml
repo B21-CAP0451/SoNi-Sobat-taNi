@@ -19,7 +19,7 @@
     <string name="unggah">unggah</string>
     <string name="hasil_dan_solusi">Hasil dan Solusi</string>
     <string name="splash_footer">© Photo by Markus Spiske on Unsplash</string>
-    <string name="splash_title">SoNi, Solusi taNi</string>
+    <string name="splash_title">SoNi, Sobat taNi</string>
     <string name="ambil_gambar">Ambil Gambar</string>
     <string name="unggah_gambar">Unggah Gambar</string>
     <string name="unduh_solusi">Unduh Solusi</string>
@@ -34,4 +34,5 @@
     values-round/strings.xml for round devices.
     -->
     <string name="hello_world">Hello Square World!</string>
+    <string name="penyakit_tomat">Titik Bakteri Tomat (Tomato Bacterial Spot)</string>
 </resources>

@@ -3,8 +3,11 @@ package com.evirus.sonisobattani
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.StrictMode
 import android.provider.MediaStore
 import android.view.View
@@ -15,19 +18,27 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.evirus.sonisobattani.databinding.ActivityPindaiTanamanBinding
 import com.livinglifetechway.quickpermissions_kotlin.runWithPermissions
 import org.json.JSONObject
 import java.lang.reflect.Method
 
-class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
+class PindaiTanaman : AppCompatActivity() {
     var imstr = ""
     var namafile = ""
     val url: String = "https://cap0451.heroku.com/predict"
     var fileUri = Uri.parse("")
+    private val REQUEST_CODE_GALERRY = 8
+    private val REQUEST_CODE_CAMERA = 7
     lateinit var mediaHelper:MediaHelper
+    private lateinit var binding: ActivityPindaiTanamanBinding
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_pindai_tanaman)
+        binding = ActivityPindaiTanamanBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.btnDown.isEnabled = false
+        binding.btnUp.isEnabled = false
         try {
             val method: Method = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
             method.invoke(null)
@@ -35,28 +46,30 @@ class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
             e.printStackTrace()
         }
         mediaHelper = MediaHelper()
-        val btnTake: Button = findViewById(R.id.btn_take)
-        val btnUp: Button = findViewById(R.id.btn_up)
-        val btnDown:Button = findViewById(R.id.btn_down)
-        btnTake.setOnClickListener (this)
-        btnUp.setOnClickListener (this)
-        btnDown.setOnClickListener(this)
+        binding.btnTake.setOnClickListener {
+           // requestPermission()
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-    }
-    override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btn_take->{
-                requestPermission()
+            if (takePictureIntent.resolveActivity(this.packageManager) != null) {
+                startActivityForResult(takePictureIntent, REQUEST_CODE_CAMERA)
+            } else {
+                Toast.makeText(this, "Unable to use camera", Toast.LENGTH_SHORT).show()
             }
-            R.id.btn_up->{
-                uploadFile()
-            }
-            R.id.btn_down->{
-                val Intent1 = Intent(this@PindaiTanaman, SolusiActivity::class.java)
-                startActivity(Intent1)
+           }
+        binding.btnGallery.setOnClickListener {
+
+            val galleryIntent = Intent(Intent.ACTION_PICK)
+            galleryIntent.type="image/*"
+
+            if (galleryIntent.resolveActivity(this.packageManager) != null) {
+                startActivityForResult(galleryIntent, REQUEST_CODE_GALERRY)
+            } else {
+                Toast.makeText(this, "Unable to open gallery", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
+
     fun uploadFile(){
         val request = object :StringRequest(Method.POST, url,
             Response.Listener{response ->
@@ -94,9 +107,63 @@ class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         val imageView:ImageView=findViewById(R.id.imageView)
         if (resultCode == Activity.RESULT_OK)
-            if (requestCode == mediaHelper.getRCCamera()){
-                imstr = mediaHelper.getBitmapToString(imageView , fileUri)
-                namafile = mediaHelper.getMyFileName()
+          //  if (requestCode == mediaHelper.getRCCamera()){
+              if (requestCode == REQUEST_CODE_CAMERA){
+                binding.btnUp.isEnabled = true
+                //imstr = mediaHelper.getBitmapToString(imageView , fileUri)
+                //namafile = mediaHelper.getMyFileName()
+                val takenImage= data?.extras?.get("data") as Bitmap
+                binding.imageView.setImageBitmap(takenImage)
+                binding.btnDown.isEnabled = false
+                binding.btnUp.setOnClickListener {
+                    //uploadFile()
+                    binding.progressBar.visibility= View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.progressBar.visibility= View.INVISIBLE
+                        binding.btnDown.isEnabled = true
+                        binding.btnUp.isEnabled = false
+                        binding.textView2.visibility=View.VISIBLE
+                    }, 1000)
+                }
+                binding.btnDown.setOnClickListener {
+                    binding.progressBar.visibility= View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        Toast.makeText(this, "Berhasil Mengunduh Solusi", Toast.LENGTH_SHORT).show()
+                        binding.progressBar.visibility= View.INVISIBLE
+                        binding.btnUp.isEnabled = false
+                        binding.textView2.visibility=View.VISIBLE
+                        val intent= Intent(this, SolusiActivity::class.java)
+                        startActivity(intent)
+                    }, 1000)
+                }
+            }else if (requestCode ==REQUEST_CODE_GALERRY){
+                binding.btnUp.isEnabled = true
+                binding.imageView.setImageURI(data?.data)
+                binding.btnDown.isEnabled = false
+                binding.btnUp.setOnClickListener {
+                    //uploadFile()
+                    binding.progressBar.visibility= View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding.progressBar.visibility= View.INVISIBLE
+                        binding.btnDown.isEnabled = true
+                        binding.btnUp.isEnabled = false
+                        binding.textView2.visibility=View.VISIBLE
+                    }, 1000)
+                }
+                binding.btnDown.setOnClickListener {
+                    binding.progressBar.visibility= View.VISIBLE
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        Toast.makeText(this, "Berhasil Mengunduh Solusi", Toast.LENGTH_SHORT).show()
+                        binding.progressBar.visibility= View.INVISIBLE
+                        binding.btnUp.isEnabled = false
+                        binding.textView2.visibility=View.VISIBLE
+                        val intent= Intent(this, SolusiActivity::class.java)
+                        startActivity(intent)
+                    }, 1000)
+                }
+
+            }else {
+                super.onActivityResult(requestCode, resultCode, data)
             }
     }
 }
