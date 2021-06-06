@@ -1,10 +1,8 @@
 package com.evirus.sonisobattani
 
-
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
@@ -12,7 +10,6 @@ import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
@@ -25,7 +22,7 @@ import java.lang.reflect.Method
 class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
     var imstr = ""
     var namafile = ""
-    val url: String = "http://www.xxxx.com"
+    val url: String = "https://cap0451.heroku.com/predict"
     var fileUri = Uri.parse("")
     lateinit var mediaHelper:MediaHelper
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +37,10 @@ class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
         mediaHelper = MediaHelper()
         val btnTake: Button = findViewById(R.id.btn_take)
         val btnUp: Button = findViewById(R.id.btn_up)
+        val btnDown:Button = findViewById(R.id.btn_down)
         btnTake.setOnClickListener (this)
         btnUp.setOnClickListener (this)
+        btnDown.setOnClickListener(this)
 
     }
     override fun onClick(v: View?) {
@@ -51,6 +50,10 @@ class PindaiTanaman : AppCompatActivity(),View.OnClickListener {
             }
             R.id.btn_up->{
                 uploadFile()
+            }
+            R.id.btn_down->{
+                val Intent1 = Intent(this@PindaiTanaman, SolusiActivity::class.java)
+                startActivity(Intent1)
             }
         }
     }
