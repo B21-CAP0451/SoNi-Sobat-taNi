@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SoNi Sobat taNi</string>
+    <string name="app_name">SoNi Solusi taNi</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -11,7 +11,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="TentangAplikasi">About</string>
     <string name="pindai_tanaman">Pindai Tanaman</string>
-    <string name="sobat_tani">SObat taNI</string>
+    <string name="sobat_tani">Solusi taNi</string>
     <string name="b21_cap0451">B21-CAP0451</string>
     <string name="anggota">Anggota</string>
     <string name="kamera">Kamera</string>

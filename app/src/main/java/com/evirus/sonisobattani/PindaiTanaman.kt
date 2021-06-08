@@ -13,7 +13,6 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
 import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
@@ -68,23 +67,22 @@ class PindaiTanaman : AppCompatActivity() {
                 Toast.makeText(this, "Unable to open gallery", Toast.LENGTH_SHORT).show()
             }
         }
-
     }
 
     fun uploadFile(){
         val request = object :StringRequest(Method.POST, url,
-            Response.Listener { response ->
-                val jsonObject = JSONObject(response)
-                val code = jsonObject.getString("code")
-                if (code.equals("000")) {
-                    Toast.makeText(this, "Unggah Foto Sukses", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this, "Unggah Foto Gagal", Toast.LENGTH_SHORT).show()
-                }
-            },
-            Response.ErrorListener { error ->
-                Toast.makeText(this, "Proses Unggah Mengalami Gangguan", Toast.LENGTH_SHORT).show()
-            }){
+                Response.Listener { response ->
+                    val jsonObject = JSONObject(response)
+                    val code = jsonObject.getString("code")
+                    if (code.equals("000")) {
+                        Toast.makeText(this, "Unggah Foto Sukses", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Unggah Foto Gagal", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                Response.ErrorListener { error ->
+                    Toast.makeText(this, "Proses Unggah Mengalami Gangguan", Toast.LENGTH_SHORT).show()
+                }){
             override fun getParams(): MutableMap<String, String> {
                 val hashmap=HashMap<String, String>()
                 hashmap.put("imstr", imstr)
@@ -96,8 +94,8 @@ class PindaiTanaman : AppCompatActivity() {
         q.add(request)
     }
     fun requestPermission()=runWithPermissions(
-        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-        Manifest.permission.CAMERA
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
     ){
             fileUri=mediaHelper.getOutputMediaFileUri()
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -116,11 +114,12 @@ class PindaiTanaman : AppCompatActivity() {
 
                 val takenImage= data?.extras?.get("data") as Bitmap
                   imstr = mediaHelper.bitmapToString(takenImage)
-                  uploadImage(imstr)
+
                 binding.imageView.setImageBitmap(takenImage)
                 binding.btnDown.isEnabled = false
                 binding.btnUp.setOnClickListener {
                     //uploadFile()
+                    uploadImage(imstr)
                     binding.progressBar.visibility= View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.progressBar.visibility = View.INVISIBLE
@@ -151,16 +150,18 @@ class PindaiTanaman : AppCompatActivity() {
                       MediaStore.Images.Media.getBitmap(baseContext.contentResolver, takenImage)
                   }
                   imstr = mediaHelper.bitmapToString(bitmap)
-                  uploadImage(imstr)
+
                 binding.btnDown.isEnabled = false
                 binding.btnUp.setOnClickListener {
                     //uploadFile()
+                   uploadImage(imstr)
                     binding.progressBar.visibility= View.VISIBLE
                     Handler(Looper.getMainLooper()).postDelayed({
                         binding.progressBar.visibility = View.INVISIBLE
                         binding.btnDown.isEnabled = true
                         binding.btnUp.isEnabled = false
                         binding.textView2.visibility = View.VISIBLE
+                        //binding.textView2.text = arrResult[0]
                         Log.d("base64", imstr)
                     }, 1000)
                 }
@@ -180,28 +181,29 @@ class PindaiTanaman : AppCompatActivity() {
                 super.onActivityResult(requestCode, resultCode, data)
             }
     }
-    private fun uploadImage(imgString : String) {
+    private fun uploadImage(imgString: String):ArrayList<String> {
         val image: String = imgString
-        val imageName: String = "image"
         val apiInterface: ApiService = ApiClient.provideApiService()
-        val call: Call<ImagePojo?>? = apiInterface.uploadImage(image)
+        val resultArray=ArrayList<String>()
+        val call: Call<ImgResponse?>? = apiInterface.uploadImage(image)
         if (call != null) {
-            call.enqueue(object : Callback<ImagePojo?> {
+            call.enqueue(object : Callback<ImgResponse?> {
                 override fun onResponse(
-                    call: Call<ImagePojo?>,
-                    response: retrofit2.Response<ImagePojo?>
+                        call: Call<ImgResponse?>,
+                        response: retrofit2.Response<ImgResponse?>
                 ) {
-                    val img_pojo: ImagePojo? = response.body()
+                    val img_pojo: ImgResponse? = response.body()
                     if (img_pojo != null) {
                         Log.d("Server Response", "success " + img_pojo.getResponse())
                     }
                 }
-                override fun onFailure(call: Call<ImagePojo?>, t: Throwable) {
+                override fun onFailure(call: Call<ImgResponse?>, t: Throwable) {
                     Log.d("Server Response", "error " + t.toString())
                 }
             })
         }else{
-            Toast.makeText(baseContext,"call null",Toast.LENGTH_SHORT).show()
+            Toast.makeText(baseContext, "call null", Toast.LENGTH_SHORT).show()
         }
+        return resultArray
     }
 }

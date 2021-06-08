@@ -2,16 +2,15 @@ package com.evirus.sonisobattani
 
 
 import retrofit2.Call
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 
 interface ApiService {
     @FormUrlEncoded
+    @Headers("content-type: image/jpeg")
     @POST("/predict")
     fun uploadImage(
        // @Field("image_name") title: String?,
-        @Field("image") image: String?
-    ): Call<ImagePojo?>?
+        @Field("data") image: String
+    ): Call<ImgResponse?>?
 }
