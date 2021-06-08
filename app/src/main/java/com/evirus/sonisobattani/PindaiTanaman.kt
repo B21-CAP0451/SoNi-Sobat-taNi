@@ -126,7 +126,6 @@ class PindaiTanaman : AppCompatActivity() {
                         binding.btnDown.isEnabled = true
                         binding.btnUp.isEnabled = false
                         binding.textView2.visibility = View.VISIBLE
-                        Log.d("base64", imstr)
                     }, 1000)
                 }
                 binding.btnDown.setOnClickListener {
@@ -161,8 +160,6 @@ class PindaiTanaman : AppCompatActivity() {
                         binding.btnDown.isEnabled = true
                         binding.btnUp.isEnabled = false
                         binding.textView2.visibility = View.VISIBLE
-                        //binding.textView2.text = arrResult[0]
-                        Log.d("base64", imstr)
                     }, 1000)
                 }
                 binding.btnDown.setOnClickListener {
