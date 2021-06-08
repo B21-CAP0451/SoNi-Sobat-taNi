@@ -194,12 +194,10 @@ class PindaiTanaman : AppCompatActivity() {
                     val img_pojo: ImagePojo? = response.body()
                     if (img_pojo != null) {
                         Log.d("Server Response", "success " + img_pojo.getResponse())
-                        Toast.makeText(baseContext,"Success",Toast.LENGTH_SHORT).show()
                     }
                 }
                 override fun onFailure(call: Call<ImagePojo?>, t: Throwable) {
                     Log.d("Server Response", "error " + t.toString())
-                    Toast.makeText(baseContext,"Error",Toast.LENGTH_SHORT).show()
                 }
             })
         }else{
