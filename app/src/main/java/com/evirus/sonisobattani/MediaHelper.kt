@@ -9,6 +9,8 @@ import android.util.Log
 import android.widget.ImageView
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -23,13 +25,16 @@ class MediaHelper {
         return this.RC_CAMERA
     }
     fun getOutputMediaFile(): File {
-        val mediaStorageDir = File(Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_DCIM), "appx06")
+        val mediaStorageDir = File(
+            Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM
+            ), "appx06"
+        )
         if (!mediaStorageDir.exists())
             if (!mediaStorageDir.mkdirs()){
                 Log.e("mkdir", "Gagal Membuat Folder")
             }
-        return File(mediaStorageDir.path+File.separator+ "${this.namaFile}")
+        return File(mediaStorageDir.path + File.separator + "${this.namaFile}")
     }
     fun getOutputMediaFileUri():Uri{
         val timeStamp:String = SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(Date())
@@ -37,7 +42,7 @@ class MediaHelper {
         this.fileUri = Uri.fromFile(getOutputMediaFile())
         return this.fileUri
     }
-    private fun bitmapToString(bitmap:Bitmap):String{
+    fun bitmapToString(bitmap: Bitmap):String{
         val outputStream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         val byteArray:ByteArray = outputStream.toByteArray()
@@ -49,10 +54,12 @@ class MediaHelper {
         val dimming = 720
         if (bitmap.height > bitmap.width){
             bitmap=Bitmap.createScaledBitmap(
-                bitmap, (bitmap.width*dimming).div(bitmap.height),dimming, true)
+                bitmap, (bitmap.width * dimming).div(bitmap.height), dimming, true
+            )
         }else{
             bitmap = Bitmap.createScaledBitmap(
-                bitmap, (bitmap.height*dimming).div(bitmap.width),dimming, true)
+                bitmap, (bitmap.height * dimming).div(bitmap.width), dimming, true
+            )
         }
         imageView.setImageBitmap(bitmap)
         return bitmapToString(bitmap)
