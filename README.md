@@ -11,3 +11,6 @@ There is a plant disease identification android app before. But not in Indonesia
 3. Open Android Studio, select File then Open...
 4. Select the folder
 5. Select Run 'app' or press "Shift+F10"
+
+# Download apk file
+Link : https://drive.google.com/file/d/1Hwzl7pEncJLfV4-yVMx910swOl-dy9It/view?usp=sharing
