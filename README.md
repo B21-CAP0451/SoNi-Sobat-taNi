@@ -1,4 +1,4 @@
-# SoNi-Sobat-taNi
+# SoNi-Solusi-taNi
 Bangkit Capstone Project
 
 # Description
